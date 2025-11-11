@@ -1,0 +1,61 @@
+{
+    "hora_lote": "2025-11-11 00:32:51",
+    "archivos": [
+        {
+            "archivo": "111120251.csv",
+            "datos correctos": 9996,
+            "errores": 4,
+            "total": 10000,
+            "fecha": "2025-11-11 00:32:51",
+            "exito": false
+        },
+        {
+            "archivo": "111120252.csv",
+            "insertados": 10000,
+            "errores": 0,
+            "total": 10000,
+            "fecha": "2025-11-11 00:32:51",
+            "exito": true
+        },
+        {
+            "archivo": "111120253.csv",
+            "datos correctos": 9989,
+            "errores": 11,
+            "total": 10000,
+            "fecha": "2025-11-11 00:32:51",
+            "exito": false
+        },
+        {
+            "archivo": "111120254.csv",
+            "insertados": 10000,
+            "errores": 0,
+            "total": 10000,
+            "fecha": "2025-11-11 00:32:51",
+            "exito": true
+        },
+        {
+            "archivo": "111120255.csv",
+            "datos correctos": 9996,
+            "errores": 4,
+            "total": 10000,
+            "fecha": "2025-11-11 00:32:51",
+            "exito": false
+        },
+        {
+            "archivo": "111120256.csv",
+            "insertados": 10000,
+            "errores": 0,
+            "total": 10000,
+            "fecha": "2025-11-11 00:32:51",
+            "exito": true
+        },
+        {
+            "archivo": "111120257.csv",
+            "insertados": 10000,
+            "errores": 0,
+            "total": 10000,
+            "fecha": "2025-11-11 00:32:51",
+            "exito": true
+        }
+    ]
+}
