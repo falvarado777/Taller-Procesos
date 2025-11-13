@@ -1,15 +1,15 @@
 <?php
 require_once "tlogica.php";
+require_once "config.php";
 
+$cfg = cargarRutas();
 $logica = new Logica();
-$rutaJson = __DIR__ . "/procesos.json";
 
-if (!is_file($rutaJson)) {
+if (!is_file($cfg["json_proceso"])) {
     exit("No se pudo localizar el archivo procesos.json.");
 }
 
-$contenido = file_get_contents($rutaJson);
-$infoProceso = json_decode($contenido, true);
+$infoProceso = json_decode(file_get_contents($cfg["json_proceso"]), true);
 $fechaLote = $infoProceso["hora_lote"];
 
 if (count($infoProceso["archivos"]) === 0) {
@@ -23,18 +23,21 @@ foreach ($infoProceso["archivos"] as $registro) {
     $okErr   = $registro["errores"]    ?? 0;
     $okTot   = $registro["total"]      ?? 0;
     $exito   = $registro["exito"]      ?? false;
+    $tiempo  = $registro["tiempo"]     ?? 0;
+    $memoria = $registro["memoria"]    ?? 0;
 
     if ($exito) {
         $mensaje =
             "Carga EXITOSA: {$archivo}\n" .
             "Total: {$okTot} | Insertados: {$okIns} | Errores: {$okErr}\n" .
+            "Duración: {$tiempo}s | Memoria usada: {$memoria}MB\n" .
             "Hora: " . date("Y-m-d H:i:s") . " (UTC-5)";
     }else {
         $mensaje =
             "CARGA FALLIDA: {$archivo}\n" .
             "Total procesado: {$okTot}\n" .
-            "Insertados: 0\n" .
             "Errores: {$okErr}\n" .
+            "Duración: {$tiempo}s | Memoria usada: {$memoria}MB\n" .
             "La carga fue cancelada.\n" .
             "Hora: " . date("Y-m-d H:i:s") . " (UTC-5)";
     }
@@ -44,7 +47,7 @@ foreach ($infoProceso["archivos"] as $registro) {
         "Total: {$okTot} | Insertados: {$okIns} | Errores: {$okErr}\n" .
         "Hora del proceso: " . date("Y-m-d H:i:s") . " (UTC-5)";
 
-    $logica->enviarWHATSAPP($mensaje);
+    $logica->enviarWHATSAPP($mensaje, $tiempo, $memoria);
 
     echo "SMS enviado correctamente para: {$archivo}<br>";
 }

@@ -2,15 +2,18 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require_once 'db.class.php';
+require_once 'config.php';
 require_once __DIR__ . '/lib/PHPMailer/Exception.php';
 require_once __DIR__ . '/lib/PHPMailer/PHPMailer.php';
 require_once __DIR__ . '/lib/PHPMailer/SMTP.php';
 date_default_timezone_set('Etc/GMT+5');
 class Logica {
     private $db;
+    private $cfg;
 
     public function __construct() {
         $this->db = new Database();
+        $this->cfg = cargarRutas();
     }
     public function cargarInformacion($rutaArchivo) {
     if (!file_exists($rutaArchivo)) {
@@ -34,26 +37,10 @@ class Logica {
     $erroresDetalle = [];
     $conn = $this->db->connect();
     $conn->beginTransaction();
-    $validUnidades = [];
-    $validCategorias = [];
+    $validUnidades = $conn->query("SELECT id FROM unidad")->fetchAll(PDO::FETCH_COLUMN);
+    $validCategorias = $conn->query("SELECT id FROM categoria")->fetchAll(PDO::FETCH_COLUMN);
 
-    try {
-        $stmtU = $conn->query("SELECT id FROM unidad");
-        foreach ($stmtU->fetchAll(PDO::FETCH_COLUMN, 0) as $val) {
-            $validUnidades[] = intval($val);
-        }
-    } catch (Exception $e) {
-        $validUnidades = [];
-    }
 
-    try {
-        $stmtC = $conn->query("SELECT id FROM categoria");
-        foreach ($stmtC->fetchAll(PDO::FETCH_COLUMN, 0) as $val) {
-            $validCategorias[] = intval($val);
-        }
-    } catch (Exception $e) {
-        $validCategorias = [];
-    }
 
     $cabecera = fgetcsv($archivo);
     if ($cabecera === false) {
@@ -66,8 +53,6 @@ class Logica {
 
     $expectedCols = 15;
     if (count($cabecera) < $expectedCols) {
-        // intentar continuar si el archivo no tiene cabecera pero sí filas
-        // cerramos y devolvemos error
         fclose($archivo);
         return [
             "ok" => false,
@@ -79,10 +64,8 @@ class Logica {
     $regexNombre = '/^NOM_PROD\d{6}$/';
     $regexDescr  = '/^DES_PROD\d{6}$/';
 
-    $logDir = __DIR__ . '/logs';
-    if (!file_exists($logDir)) {
-        mkdir($logDir, 0777, true);
-    }
+    $logDir = $this->cfg["log_dir"];
+    if (!file_exists($logDir)) mkdir($logDir, 0777, true);
     $logPath = $logDir . '/errores_' . date('Ymd_His') . '.log';
     $logFile = fopen($logPath, 'a');
 
@@ -237,46 +220,46 @@ class Logica {
 
 }
 
-    public function enviarCorreo($nombreArchivo, $insertados, $errores, $total, $exito) {
+    public function enviarCorreo($nombreArchivo, $insertados, $errores, $total, $exito, $tiempo, $memoria) {
         $mail = new PHPMailer(true);
+        $mail->CharSet = 'UTF-8';
 
         try {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'javaa16102002@gmail.com';
-            $mail->Password = 'heuh mrva hclr pkpf';
+            $mail->Username = $this->cfg['correo_manda'];
+            $mail->Password = $this->cfg['contrasena_aplicacion'];
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
-            $mail->setFrom('javaa16102002@gmail.com', 'SophyFarm taller');
-            $mail->addAddress('feralza1610@gmail.com', 'Yo');
+            $mail->setFrom($this->cfg['correo_manda'], 'SophyFarm - Importación de datos');
+            $mail->addAddress($this->cfg['correo_recibe'], 'Administrador');
+
+
 
             $mail->isHTML(true);
-            $mail->Subject = "Carga de datos sophyfarm completada: $nombreArchivo";
+            $mail->Subject = ($exito ? "Carga exitosa" : "Carga fallida") . " - {$nombreArchivo}";
+            $color = $exito ? "#2ecc71" : "#e74c3c";
+            $mensaje = $exito
+                ? "El archivo se procesó correctamente sin errores."
+                : "El proceso de carga fue cancelado debido a errores en los datos.";
 
-            if ($exito) {
-                $mail->Subject = "Carga de datos completada: $nombreArchivo";
-                $mail->Body = "
-                    <h3>Carga EXITOSA</h3>
-                    <p><b>Archivo:</b> $nombreArchivo</p>
-                    <p><b>Total registros:</b> $total</p>
-                    <p><b>Insertados:</b> $insertados</p>
-                    <p><b>Errores:</b> $errores</p>
-                    <p>Hora: " . date("Y-m-d H:i:s") . " (UTC-5)</p>
-                ";
-            }else {
-                $mail->Subject = "ERROR - Carga fallida: $nombreArchivo";
-                $mail->Body = "
-                    <h3>CARGA FALLIDA</h3>
-                    <p><b>Archivo:</b> $nombreArchivo</p>
-                    <p><b>Total procesado:</b> $total</p>
-                    <p><b>Insertados:</b> 0</p>
-                    <p><b>Errores:</b> $errores</p>
-                    <p>La carga fue cancelada.</p>
-                    <p>Hora: " . date("Y-m-d H:i:s") . " (UTC-5)</p>
-                ";
-            }
+            $mail->Body = "
+            <div style='font-family:Arial, sans-serif; border:1px solid #ddd; border-radius:8px; padding:20px; max-width:500px;'>
+                <h2 style='color:{$color}; margin-top:0;'>
+                    " . ($exito ? "✔ Carga exitosa" : "⚠ Carga fallida") . "
+                </h2>
+                <p><strong>Archivo:</strong> {$nombreArchivo}</p>
+                <p><strong>Total registros:</strong> {$total}</p>
+                <p><strong>Insertados:</strong> {$insertados}</p>
+                <p><strong>Errores:</strong> {$errores}</p>
+                <p><strong>Duración:</strong> {$tiempo} segundos</p>
+                <p><strong>Memoria usada:</strong> {$memoria} MB</p>
+                <hr>
+                <p>{$mensaje}</p>
+                <p style='font-size:12px; color:#777;'>SophyFarm © " . date("Y") . "</p>
+            </div>";
 
             $mail->send();
             echo " Correo enviado correctamente.<br>";
@@ -287,9 +270,11 @@ class Logica {
     }
     }
 
-    public function enviarWHATSAPP($mensaje) {
-        $apikey = '8723112';
-        $phone  = '+573178446761';
+    public function enviarWHATSAPP($mensaje, $tiempo, $memoria) {
+        $apikey = $this->cfg['apikey_telefono'];
+        $phone  = $this->cfg['numero_telefono'];
+
+        $mensaje .= "\nDuración: {$tiempo}s\nMemoria usada: {$memoria}MB";
 
         $url = "https://api.callmebot.com/whatsapp.php?phone={$phone}&text=" . urlencode($mensaje) . "&apikey={$apikey}";
 

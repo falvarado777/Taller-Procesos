@@ -1,61 +1,75 @@
 {
-    "hora_lote": "2025-11-11 00:32:51",
+    "hora_lote": "2025-11-13 01:33:39",
     "archivos": [
         {
             "archivo": "111120251.csv",
-            "datos correctos": 9996,
-            "errores": 4,
+            "insertados": 10000,
+            "errores": 0,
             "total": 10000,
-            "fecha": "2025-11-11 00:32:51",
-            "exito": false
+            "fecha": "2025-11-13 01:33:39",
+            "exito": true,
+            "tiempo": 1.019,
+            "memoria": 2
         },
         {
             "archivo": "111120252.csv",
             "insertados": 10000,
             "errores": 0,
             "total": 10000,
-            "fecha": "2025-11-11 00:32:51",
-            "exito": true
+            "fecha": "2025-11-13 01:33:39",
+            "exito": true,
+            "tiempo": 1.148,
+            "memoria": 2
         },
         {
             "archivo": "111120253.csv",
-            "datos correctos": 9989,
-            "errores": 11,
+            "insertados": 10000,
+            "errores": 0,
             "total": 10000,
-            "fecha": "2025-11-11 00:32:51",
-            "exito": false
+            "fecha": "2025-11-13 01:33:39",
+            "exito": true,
+            "tiempo": 1.074,
+            "memoria": 2
         },
         {
             "archivo": "111120254.csv",
             "insertados": 10000,
             "errores": 0,
             "total": 10000,
-            "fecha": "2025-11-11 00:32:51",
-            "exito": true
+            "fecha": "2025-11-13 01:33:39",
+            "exito": true,
+            "tiempo": 1.053,
+            "memoria": 2
         },
         {
             "archivo": "111120255.csv",
-            "datos correctos": 9996,
-            "errores": 4,
+            "insertados": 10000,
+            "errores": 0,
             "total": 10000,
-            "fecha": "2025-11-11 00:32:51",
-            "exito": false
+            "fecha": "2025-11-13 01:33:39",
+            "exito": true,
+            "tiempo": 1.138,
+            "memoria": 2
         },
         {
             "archivo": "111120256.csv",
             "insertados": 10000,
             "errores": 0,
             "total": 10000,
-            "fecha": "2025-11-11 00:32:51",
-            "exito": true
+            "fecha": "2025-11-13 01:33:39",
+            "exito": true,
+            "tiempo": 1.103,
+            "memoria": 2
         },
         {
             "archivo": "111120257.csv",
             "insertados": 10000,
             "errores": 0,
             "total": 10000,
-            "fecha": "2025-11-11 00:32:51",
-            "exito": true
+            "fecha": "2025-11-13 01:33:39",
+            "exito": true,
+            "tiempo": 1.042,
+            "memoria": 2
         }
     ]
 }
