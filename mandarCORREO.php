@@ -20,13 +20,14 @@ foreach ($infoLote["archivos"] as $registro) {
     $cantIns     = $registro["insertados"] ?? 0;
     $cantErr     = $registro["errores"]    ?? 0;
     $cantTot     = $registro["total"]      ?? 0;
+    $fecha       = $registro["fecha"]      ?? 0;
     $exito       = $registro["exito"]      ?? false;
     $tiempo      = $registro["tiempo"]     ?? 0;
     $memoria     = $registro["memoria"]    ?? 0;
 
     echo "<hr>";
     echo "<b>Generando envío para:</b> {$archivoName}<br>";
-    $logica->enviarCorreo($archivoName, $cantIns, $cantErr, $cantTot, $exito, $tiempo, $memoria);
+    $logica->enviarCorreo($archivoName, $cantIns, $cantErr, $cantTot, $fecha, $exito, $tiempo, $memoria);
 }
 
 echo "<hr><b>Finalizó el envío de todos los correos.</b><br>";

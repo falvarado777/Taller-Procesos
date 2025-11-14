@@ -6,3 +6,6 @@ numero_telefono=+573178446761
 correo_manda=javaa16102002@gmail.com
 contrasena_aplicacion=heuh mrva hclr pkpf
 correo_recibe=feralza1610@gmail.com
+bd=sophyfarm
+bd_user=root
+bd_pass=

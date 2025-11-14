@@ -22,6 +22,7 @@ foreach ($infoProceso["archivos"] as $registro) {
     $okIns   = $registro["insertados"] ?? 0;
     $okErr   = $registro["errores"]    ?? 0;
     $okTot   = $registro["total"]      ?? 0;
+    $fecha   = $registro["fecha"]      ?? 0;
     $exito   = $registro["exito"]      ?? false;
     $tiempo  = $registro["tiempo"]     ?? 0;
     $memoria = $registro["memoria"]    ?? 0;
@@ -30,6 +31,7 @@ foreach ($infoProceso["archivos"] as $registro) {
         $mensaje =
             "Carga EXITOSA: {$archivo}\n" .
             "Total: {$okTot} | Insertados: {$okIns} | Errores: {$okErr}\n" .
+            "Fecha del proceso: {$fecha}\n" .
             "Duración: {$tiempo}s | Memoria usada: {$memoria}MB\n" .
             "Hora: " . date("Y-m-d H:i:s") . " (UTC-5)";
     }else {
@@ -37,15 +39,11 @@ foreach ($infoProceso["archivos"] as $registro) {
             "CARGA FALLIDA: {$archivo}\n" .
             "Total procesado: {$okTot}\n" .
             "Errores: {$okErr}\n" .
+            "Fecha del proceso: {$fecha}\n" .
             "Duración: {$tiempo}s | Memoria usada: {$memoria}MB\n" .
             "La carga fue cancelada.\n" .
             "Hora: " . date("Y-m-d H:i:s") . " (UTC-5)";
     }
-
-    $textoSms =
-        "Carga finalizada: {$archivo}\n" .
-        "Total: {$okTot} | Insertados: {$okIns} | Errores: {$okErr}\n" .
-        "Hora del proceso: " . date("Y-m-d H:i:s") . " (UTC-5)";
 
     $logica->enviarWHATSAPP($mensaje, $tiempo, $memoria);
 

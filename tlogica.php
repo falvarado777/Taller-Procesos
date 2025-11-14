@@ -65,9 +65,11 @@ class Logica {
     $regexDescr  = '/^DES_PROD\d{6}$/';
 
     $logDir = $this->cfg["log_dir"];
-    if (!file_exists($logDir)) mkdir($logDir, 0777, true);
-    $logPath = $logDir . '/errores_' . date('Ymd_His') . '.log';
-    $logFile = fopen($logPath, 'a');
+    if (!file_exists($logDir)) {
+        mkdir($logDir, 0777, true);
+    }
+    $logFile = null;
+    $logPath = "";
 
     $sql = "INSERT INTO elemento (
             codigo_elemnto, nmbre_elemnto, dscrpcion_elemnto, ctgria_elemnto, und_elemnto,
@@ -146,6 +148,10 @@ class Logica {
 
             if (!$lineOk) {
                 $errores++;
+                if ($logFile === null) {
+                    $logPath = $logDir . '/errores_' . basename($rutaArchivo) . '_' . date('Ymd_His') . '.log';
+                    $logFile = fopen($logPath, 'a');
+                }
                 $detalleLinea = "Archivo: " . basename($rutaArchivo) .
                     " | Línea $total | Errores: " . implode("; ", $msgs) .
                     " | Datos: " . implode(",", $fila) . "\n";
@@ -182,7 +188,9 @@ class Logica {
     } 
 
     fclose($archivo);
-    fclose($logFile);
+    if ($logFile !== null) {
+        fclose($logFile);
+    }
 
     $detalle = "";
     if (!empty($erroresDetalle)) {
@@ -220,7 +228,7 @@ class Logica {
 
 }
 
-    public function enviarCorreo($nombreArchivo, $insertados, $errores, $total, $exito, $tiempo, $memoria) {
+    public function enviarCorreo($nombreArchivo, $insertados, $errores, $total, $fecha, $exito, $tiempo, $memoria) {
         $mail = new PHPMailer(true);
         $mail->CharSet = 'UTF-8';
 
@@ -254,6 +262,7 @@ class Logica {
                 <p><strong>Total registros:</strong> {$total}</p>
                 <p><strong>Insertados:</strong> {$insertados}</p>
                 <p><strong>Errores:</strong> {$errores}</p>
+                <p><strong>Hora del proceso:</strong> {$fecha}</p>
                 <p><strong>Duración:</strong> {$tiempo} segundos</p>
                 <p><strong>Memoria usada:</strong> {$memoria} MB</p>
                 <hr>

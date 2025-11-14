@@ -1,5 +1,5 @@
 ﻿<?php
-// Definiciones de constantes de estado
+require_once 'config.php';
 define("CONN_ERROR","Error connecting DB");
 define("NO_DATA",0);
 define("BAD_QUERY",1);
@@ -19,17 +19,18 @@ class Database {
     private $db;
     private $host;
     private $path;
-
     public $results;
     public $rows;
     public $messages;
+    
 
     public function __construct() {
+        $cfg = cargarRutas();
         $this->conn = null;
         $this->results = null;
-        $this->db = "sophyfarm";
-        $this->user = "root";         
-        $this->pwd = "";               
+        $this->db = $cfg["bd"];
+        $this->user = $cfg["bd_user"];         
+        $this->pwd = $cfg["bd_pass"];               
         $this->host = "localhost:3306";
         $this->path = "http://localhost/taller";
         $this->rows = 0;
