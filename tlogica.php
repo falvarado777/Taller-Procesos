@@ -290,7 +290,7 @@ class Logica {
         try {
             $response = file_get_contents($url);
             if (strpos($response, 'Message queued') !== false) {
-                echo "📱 Mensaje de WhatsApp enviado correctamente.<br>";
+                echo "Mensaje de WhatsApp enviado correctamente.<br>";
             } else {
                 echo "No se pudo confirmar el envío del mensaje. Respuesta: $response<br>";
             }

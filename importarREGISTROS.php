@@ -33,7 +33,7 @@ foreach ($listadoCsv as $rutaCsv) {
     $finArchivo = microtime(true);
 
     $tiempoArchivo = round($finArchivo - $inicioArchivo, 3);
-    $memoriaConsumida = round(memory_get_peak_usage(true) / 1024 / 1024, 2); // MB
+    $memoriaConsumida = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
 
     echo "<p>Tiempo de procesamiento: {$tiempoArchivo} segundos.</p>";
     echo "<p>Memoria consumida: {$memoriaConsumida} MB.</p>";

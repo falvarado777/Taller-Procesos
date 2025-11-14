@@ -58,7 +58,6 @@ class Database {
         return $this->conn;
     }
 
-    // Ejecutar consultas de cualquier tipo
     public function doQuery($query, $type = SELECT_QUERY) {
         try {
             $stmt = $this->conn->prepare($query);
@@ -78,7 +77,7 @@ class Database {
                     return false;
             }
         } catch (PDOException $e) {
-            echo "⚠️ Error en la consulta: " . $e->getMessage() . "<br>Query: $query";
+            echo "Error en la consulta: " . $e->getMessage() . "<br>Query: $query";
             return false;
         }
     }
